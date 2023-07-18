@@ -1,18 +1,28 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
+const pause = (duration) => {
+    return new Promise((resolve) => {
+        setTimeout(resolve, duration);
+    })
+}
 
 const usersApi = createApi({
     reducerPath: 'users',
     baseQuery: fetchBaseQuery({
-        baseUrl: 'http://localhost:3000'
+        baseUrl: 'http://localhost:3000',
+        fetchFn: async (...args) => {
+            await pause(1000);
+            return fetch(...args);
+        }
     }),
     endpoints(builder) {
+        debugger;
         return {
             fetchUsers: builder.query({
                 query: () => {
                     return {
                         url: '/users',
-                        method: 'get'
+                        method: 'GET'
                     };
                 },
             }),
@@ -22,7 +32,7 @@ const usersApi = createApi({
                         url: '/users',
                         method: 'post',
                         body: {
-                            name: "Can"
+                            name: "POST"
                         }
                     };
                 },
@@ -31,7 +41,7 @@ const usersApi = createApi({
                 query: (user) => {
                     return {
                         url: `/users/${user.id}`,
-                        method: 'delete'
+                        method: 'DELETE'
                     };
                 },
             }),
